@@ -10,8 +10,6 @@ class MovieDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(movie.voteAverage);
-    // print(movie.voteCount);
     return Scaffold(
       appBar: AppBar(title: Text(movie.title)),
       body: SingleChildScrollView(
@@ -30,15 +28,18 @@ class MovieDetailScreen extends StatelessWidget {
                     top: 0,
                     left: 0,
                     right: 0,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      height: MediaQuery.sizeOf(context).height * 0.6,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(12)),
-                        image: DecorationImage(
-                          image: NetworkImage('https://image.tmdb.org/t/p/w500/${movie.posterPath}'),
-                          fit: BoxFit.fill,
+                    child: Hero(
+                      tag: movie.id,
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 12),
+                        height: MediaQuery.sizeOf(context).height * 0.6,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(12)),
+                          image: DecorationImage(
+                            image: NetworkImage('https://image.tmdb.org/t/p/w500/${movie.posterPath}'),
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),

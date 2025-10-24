@@ -7,7 +7,7 @@ final class RemoteMoviesRepository implements MoviesRepository {
   const RemoteMoviesRepository(this._client);
 
   @override
-  FutureExceptionOr<PopularMoviesResponseDto> fetchPopularMovies([
+  FutureExceptionOr<MoviesResponseDto> fetchPopularMovies([
     PopularMoviesQueryParamsDto query = const PopularMoviesQueryParamsDto(),
   ]) async {
     final result = await _client.call(
@@ -18,6 +18,19 @@ final class RemoteMoviesRepository implements MoviesRepository {
         ..removeWhere((k, v) => v == null),
     );
 
-    return processData((p0) => PopularMoviesResponseDtoMapper.fromMap(p0), result);
+    return processData((p0) => MoviesResponseDtoMapper.fromMap(p0), result);
+  }
+
+  @override
+  FutureExceptionOr<MoviesResponseDto> searchMovies(SearchMovieQueryParamsDto query) async {
+    final result = await _client.call(
+      path: ApiConfig.instance.getSearchMovie,
+      request: RequestType.get,
+      queryParams: query.toMap()
+        ..addAll({'api_key': const String.fromEnvironment('TMDB_API_KEY')})
+        ..removeWhere((k, v) => v == null),
+    );
+
+    return processData((p0) => MoviesResponseDtoMapper.fromMap(p0), result);
   }
 }

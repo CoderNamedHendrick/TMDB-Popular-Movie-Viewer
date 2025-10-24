@@ -4,9 +4,11 @@ import '../../../../shared/network/client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 abstract interface class MoviesRepository {
-  FutureExceptionOr<PopularMoviesResponseDto> fetchPopularMovies([
+  FutureExceptionOr<MoviesResponseDto> fetchPopularMovies([
     PopularMoviesQueryParamsDto query = const PopularMoviesQueryParamsDto(),
   ]);
+
+  FutureExceptionOr<MoviesResponseDto> searchMovies(SearchMovieQueryParamsDto query);
 }
 
 final moviesRepositoryProvider = Provider.autoDispose<MoviesRepository>((ref) {

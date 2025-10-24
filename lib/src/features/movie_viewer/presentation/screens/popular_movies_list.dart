@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../shared/shared.dart';
 import '../../domain/domain.dart';
 import '../application/application.dart';
+import '../application/search_movies/vm.dart';
 import '../widgets/widgets.dart';
 
 class PopularMoviesListScreen extends ConsumerStatefulWidget {
@@ -17,6 +18,9 @@ class PopularMoviesListScreen extends ConsumerStatefulWidget {
 
 class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScreen> {
   final scrollController = ScrollController();
+
+  late final Debounceable<UiState<List<MovieResponseDto>>, String> _debouncedSearch;
+  late Iterable<Widget> _lastOptions = <Widget>[];
 
   void _fetchNextPageListener() {
     if (!scrollController.hasClients) return;
@@ -32,6 +36,7 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
 
     Future.microtask(() {
       ref.read(popularMoviesVm.notifier).fetchMovies();
+      _debouncedSearch = debounce<UiState<List<MovieResponseDto>>, String>(ref.read(searchMoviesVm.notifier).search);
     });
 
     scrollController.addListener(_fetchNextPageListener);
@@ -48,7 +53,63 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
     return Scaffold(
       appBar: AppBar(
         title: const Text('Movie viewer'),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
+        actions: [
+          SearchAnchor(
+            viewBackgroundColor: context.colorScheme.primary,
+            viewHintText: 'Search movies',
+            headerHintStyle: TextStyle(color: context.colorScheme.surface),
+            dividerColor: context.colorScheme.inversePrimary,
+            viewOnChanged: (value) {},
+            viewBuilder: (widgets) {
+              return ListView(
+                padding: EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(context).bottom),
+                children: [...widgets],
+              );
+            },
+            builder: (context, controller) {
+              return IconButton(onPressed: controller.openView, icon: const Icon(Icons.search));
+            },
+            suggestionsBuilder: (context, controller) async {
+              final uiState = await _debouncedSearch(controller.text);
+
+              if (uiState == null) return _lastOptions;
+
+              _lastOptions = switch (uiState) {
+                Uninitialised<List<MovieResponseDto>>() => [],
+                Success<List<MovieResponseDto>>(:var result) => [
+                  ...result.map((r) {
+                    return MovieTile(
+                      leading: Hero(
+                        tag: r.id,
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Text(r.title, style: TextStyle(color: context.colorScheme.surface)),
+                      onTap: () {
+                        widget.onMovie(r);
+                      },
+                    );
+                  }),
+                ],
+                Loading<List<MovieResponseDto>>() => [MovieTileShimmer.list],
+                Failure<List<MovieResponseDto>>(:var error) => [
+                  Text('An error occurred\n$error', textAlign: TextAlign.center),
+                ],
+              };
+
+              return _lastOptions;
+            },
+          ),
+        ],
       ),
       body: ref
           .watch(popularMoviesVm.select((s) => s.moviesUiState))
@@ -90,31 +151,39 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
                 );
               }
 
-              return ListView(
-                controller: scrollController,
-                children: [
-                  ...result.map(
-                    (r) => MovieTile(
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
-                            fit: BoxFit.cover,
+              return RefreshIndicator.adaptive(
+                onRefresh: () async {
+                  await ref.read(popularMoviesVm.notifier).fetchMovies();
+                },
+                child: ListView(
+                  controller: scrollController,
+                  children: [
+                    ...result.map(
+                      (r) => MovieTile(
+                        leading: Hero(
+                          tag: r.id,
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
                         ),
+                        title: Text(r.title),
+                        onTap: () {
+                          widget.onMovie(r);
+                        },
                       ),
-                      title: Text(r.title),
-                      onTap: () {
-                        widget.onMovie(r);
-                      },
                     ),
-                  ),
 
-                  if (type.isLoading) const MovieTileShimmer(),
-                ],
+                    if (type.isLoading) const MovieTileShimmer(),
+                  ],
+                ),
               );
             },
           ),

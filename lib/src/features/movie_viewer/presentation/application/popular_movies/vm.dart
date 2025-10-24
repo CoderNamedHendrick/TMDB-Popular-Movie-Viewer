@@ -16,7 +16,7 @@ final class PopularMoviesViewModel extends AutoDisposeNotifier<PopularMoviesStat
   }
 
   Future<void> fetchMovies() async {
-    state = state.copyWith(moviesUiState: state.moviesUiState.loading());
+    state = state.copyWith(moviesUiState: const Loading());
 
     final result = await _repository.fetchPopularMovies();
 

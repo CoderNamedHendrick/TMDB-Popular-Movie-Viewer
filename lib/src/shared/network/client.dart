@@ -1,3 +1,4 @@
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/foundation.dart';
@@ -66,6 +67,9 @@ Either<Exception, E> _transformResponse<E>(dynamic data, E Function(dynamic) tra
     return Right(transform(data));
   } on TypeError {
     return Left(Exception('Failed to decode response'));
+  } on MapperException catch (e) {
+    debugPrint(e.message);
+    return Left(Exception('Failed to decode response, try again later'));
   } on Exception catch (e) {
     return Left(Exception(e.toString()));
   }

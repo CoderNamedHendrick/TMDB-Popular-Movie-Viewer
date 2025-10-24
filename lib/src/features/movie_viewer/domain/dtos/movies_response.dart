@@ -1,13 +1,13 @@
 import 'package:dart_mappable/dart_mappable.dart';
 
-part 'popular_movies_response.mapper.dart';
+part 'movies_response.mapper.dart';
 
 @MappableClass()
-final class PopularMoviesResponseDto with PopularMoviesResponseDtoMappable {
+final class MoviesResponseDto with MoviesResponseDtoMappable {
   final int page;
   final List<MovieResponseDto> results;
 
-  const PopularMoviesResponseDto({required this.page, required this.results});
+  const MoviesResponseDto({required this.page, required this.results});
 }
 
 @MappableClass(caseStyle: CaseStyle.snakeCase)
@@ -29,14 +29,14 @@ final class MovieResponseDto with MovieResponseDtoMappable {
 
   const MovieResponseDto({
     required this.adult,
-    required this.backdropPath,
+    this.backdropPath = '',
     required this.genreIds,
     required this.id,
     required this.originalLanguage,
     required this.originalTitle,
     required this.overview,
     required this.popularity,
-    required this.posterPath,
+    this.posterPath = '',
     required this.releaseDate,
     required this.title,
     required this.video,
