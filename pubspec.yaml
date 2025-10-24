@@ -37,6 +37,8 @@ dependencies:
   dio: ^5.9.0
   either_dart: ^1.0.0
   dart_mappable: ^4.6.1
+  flutter_riverpod: ^2.6.1
+  skeletonizer: ^2.1.0+1
 
 dev_dependencies:
   flutter_test:

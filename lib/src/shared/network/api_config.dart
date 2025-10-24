@@ -3,5 +3,5 @@ final class ApiConfig {
 
   static const instance = ApiConfig._();
 
-  String get getCustomers => 'https://dummyjson.com/users';
+  String get getPopularMovies => 'https://api.themoviedb.org/3/movie/popular';
 }

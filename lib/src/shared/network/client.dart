@@ -1,15 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
+
+typedef FutureExceptionOr<T> = Future<Either<Exception, T>>;
 
 enum RequestType { get, post, delete, put }
+
+final networkClientProvider = Provider<DioNetworkClient>((ref) {
+  return DioNetworkClient();
+});
 
 final class DioNetworkClient {
   DioNetworkClient();
 
   final _dio = Dio()..interceptors.addAll([if (kDebugMode) LogInterceptor(requestBody: true, responseBody: true)]);
 
-  Future<Either<Exception, Response>> call<T>({
+  FutureExceptionOr<Response> call<T>({
     required String path,
     Map<String, dynamic> queryParams = const {},
     Object? body,
@@ -27,8 +34,8 @@ final class DioNetworkClient {
         return Right(response);
       }
 
-      if (response.data case Map json when json.containsKey('message')) {
-        return Left(Exception(json['message']));
+      if (response.data case Map json when json.containsKey('status_message')) {
+        return Left(Exception(json['status_message']));
       }
 
       return Left(Exception('Failed to receive response from the server'));
@@ -37,7 +44,7 @@ final class DioNetworkClient {
         "A dio exception occurred\ntype: ${e.type.toString()}\ndata:${e.response?.data}\nmessage:${e.message}",
       );
       return Left(switch (e.type) {
-        DioExceptionType.badResponse => Exception(e.response?.data['message'] ?? 'Request to server failed'),
+        DioExceptionType.badResponse => Exception(e.response?.data['status_message'] ?? 'Request to server failed'),
         DioExceptionType.connectionTimeout => Exception('Failed to make request'),
         _ => Exception(e.message),
       });

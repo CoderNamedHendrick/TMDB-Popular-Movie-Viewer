@@ -1,3 +1,25 @@
+import 'package:flutter/material.dart';
+
+import '../app/router.dart';
+import 'extensions.dart';
+
+enum UiStateType {
+  uninitialised,
+  loading,
+  error,
+  success;
+
+  bool get isUninitialised => this == UiStateType.uninitialised;
+
+  bool get isLoading => this == UiStateType.loading;
+
+  bool get isError => this == UiStateType.error;
+
+  bool get isSuccess => this == UiStateType.success;
+}
+
+bool _kDisplayError(Exception e) => true;
+
 sealed class UiState<T> {
   const UiState();
 
@@ -26,6 +48,41 @@ sealed class UiState<T> {
     Failure() => true,
     _ => false,
   };
+
+  Widget whenData({required Widget Function(T? state, Exception? error, UiStateType type) onData}) {
+    return switch (this) {
+      Uninitialised<T>() => onData(null, null, UiStateType.uninitialised),
+      Success<T>(:final data) => onData(data, null, UiStateType.success),
+      Loading<T>(:final data) => onData(data, null, UiStateType.loading),
+      Failure<T>(:final error, :final data) => onData(data, error, UiStateType.error),
+    };
+  }
+
+  void displayError({bool Function(Exception error) displayError = _kDisplayError}) async {
+    switch (this) {
+      case Uninitialised<dynamic>():
+      case Success<dynamic>():
+      case Loading<dynamic>():
+        return;
+      case Failure<dynamic>(:final error):
+        if (!displayError(error)) return;
+        assert(error.toString().isEmpty, 'Please pass appropriate exception');
+
+        final context = MovieViewerRouter.instance.navigator.currentContext;
+
+        if (context == null) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.toString(),
+              style: context.textTheme.labelMedium?.copyWith(color: context.colorScheme.onErrorContainer),
+            ),
+            backgroundColor: context.colorScheme.errorContainer,
+          ),
+        );
+    }
+  }
 }
 
 class Uninitialised<T> extends UiState<T> {
