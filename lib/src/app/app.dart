@@ -7,7 +7,7 @@ class MovieViewerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = ColorScheme.fromSeed(seedColor: Colors.blue, primary: Colors.blue.shade800);
+    final scheme = ColorScheme.fromSeed(seedColor: Colors.blue, primary: const Color(0xff032541));
     return MaterialApp(
       routes: MovieViewerRouter.instance.routes,
       onGenerateRoute: MovieViewerRouter.instance.onGenerateRoute,

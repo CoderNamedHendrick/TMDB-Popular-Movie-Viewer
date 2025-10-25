@@ -36,10 +36,13 @@ class MovieDetailScreen extends StatelessWidget {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.all(Radius.circular(12)),
-                          image: DecorationImage(
-                            image: NetworkImage('https://image.tmdb.org/t/p/w500/${movie.posterPath}'),
-                            fit: BoxFit.fill,
-                          ),
+                          color: context.colorScheme.onPrimaryContainer,
+                          image: movie.posterPath.isNotEmpty
+                              ? DecorationImage(
+                                  image: NetworkImage('https://image.tmdb.org/t/p/w500/${movie.posterPath}'),
+                                  fit: BoxFit.fill,
+                                )
+                              : null,
                         ),
                       ),
                     ),

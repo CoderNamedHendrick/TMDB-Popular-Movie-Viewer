@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -77,8 +78,9 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
               _lastOptions = switch (uiState) {
                 Uninitialised<List<MovieResponseDto>>() => [],
                 Success<List<MovieResponseDto>>(:var result) => [
-                  ...result.map((r) {
+                  ...result.mapIndexed((i, r) {
                     return MovieTile(
+                      key: Key('movie$i'),
                       leading: Hero(
                         tag: r.id,
                         child: Container(
@@ -86,10 +88,13 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
-                              fit: BoxFit.cover,
-                            ),
+                            color: context.colorScheme.onPrimaryContainer,
+                            image: r.posterPath.isNotEmpty
+                                ? DecorationImage(
+                                    image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
                           ),
                         ),
                       ),
@@ -158,8 +163,9 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
                 child: ListView(
                   controller: scrollController,
                   children: [
-                    ...result.map(
-                      (r) => MovieTile(
+                    ...result.mapIndexed(
+                      (i, r) => MovieTile(
+                        key: Key('movie$i'),
                         leading: Hero(
                           tag: r.id,
                           child: Container(
@@ -167,10 +173,13 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
                             height: 40,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
-                                fit: BoxFit.cover,
-                              ),
+                              color: context.colorScheme.onPrimaryContainer,
+                              image: r.posterPath.isNotEmpty
+                                  ? DecorationImage(
+                                      image: NetworkImage('https://image.tmdb.org/t/p/w185${r.posterPath}'),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
                             ),
                           ),
                         ),
