@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol_finders/patrol_finders.dart';
-import 'package:snag_challenge/src/app/app.dart';
-import 'package:snag_challenge/src/features/movie_viewer/presentation/presentation.dart';
-import 'package:snag_challenge/src/features/movie_viewer/presentation/widgets/widgets.dart';
+import 'package:tmdb_movie_viewer/src/app/app.dart';
+import 'package:tmdb_movie_viewer/src/features/movie_viewer/presentation/presentation.dart';
+import 'package:tmdb_movie_viewer/src/features/movie_viewer/presentation/widgets/widgets.dart';
 
 import '../common.dart';
 

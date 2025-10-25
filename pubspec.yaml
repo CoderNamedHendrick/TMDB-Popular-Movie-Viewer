@@ -1,4 +1,4 @@
-name: snag_challenge
+name: tmdb_movie_viewer
 description: "Snag frontend development challenge, popular movies"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
