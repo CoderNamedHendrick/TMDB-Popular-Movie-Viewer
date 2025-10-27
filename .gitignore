@@ -46,3 +46,6 @@ app.*.map.json
 
 .env
 *.mapper.dart
+
+# patrol
+integration_test/test_bundle.dart

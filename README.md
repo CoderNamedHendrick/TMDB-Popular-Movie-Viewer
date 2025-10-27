@@ -35,8 +35,10 @@ flutter build apk --dart-define=TMDB_API_KEY=#apiKey
 
 ### 🚧 Run test
 
-Like running the application, running integration tests works with the following command
+Running the integration tests requires the patrol cli installed. Check [here](https://patrol.leancode.co/documentation) for the installation guide
+
+Once the patrol cli is installed, running the test is simple and done with the following command
 
 ```shell
-flutter test --dart-define=TMDB_API_KEY=#apiKey integration_test/scenarios_test.dart
+patrol test -t integration_test/scenarios_test.dart --dart-define=TMDB_API_KEY=#apiKey
 ```
