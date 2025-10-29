@@ -20,7 +20,8 @@ class PopularMoviesListScreen extends ConsumerStatefulWidget {
 class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScreen> {
   final scrollController = ScrollController();
 
-  late final Debounceable<UiState<List<MovieResponseDto>>, String> _debouncedSearch;
+  late final Debounceable<UiState<List<MovieResponseDto>>, String> _debouncedSearch =
+      debounce<UiState<List<MovieResponseDto>>, String>(ref.read(searchMoviesVm.notifier).search);
   late Iterable<Widget> _lastOptions = <Widget>[];
 
   void _fetchNextPageListener() {
@@ -37,7 +38,6 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
 
     Future.microtask(() {
       ref.read(popularMoviesVm.notifier).fetchMovies();
-      _debouncedSearch = debounce<UiState<List<MovieResponseDto>>, String>(ref.read(searchMoviesVm.notifier).search);
     });
 
     scrollController.addListener(_fetchNextPageListener);
@@ -58,9 +58,9 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
           SearchAnchor(
             viewBackgroundColor: context.colorScheme.primary,
             viewHintText: 'Search movies',
+            headerTextStyle: TextStyle(color: context.colorScheme.surface),
             headerHintStyle: TextStyle(color: context.colorScheme.surface),
             dividerColor: context.colorScheme.inversePrimary,
-            viewOnChanged: (value) {},
             viewBuilder: (widgets) {
               return ListView(
                 padding: EdgeInsets.only(bottom: MediaQuery.viewPaddingOf(context).bottom),
