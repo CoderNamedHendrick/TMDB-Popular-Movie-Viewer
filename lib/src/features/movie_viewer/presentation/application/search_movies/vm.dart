@@ -20,6 +20,11 @@ final class SearchMoviesViewModel extends AutoDisposeNotifier<SearchMoviesState>
   }
 
   Future<UiState<List<MovieResponseDto>>> search(String query) async {
+    if (query.isEmpty) {
+      state = state.copyWith(moviesUiState: const Uninitialised());
+      return state.moviesUiState;
+    }
+
     state = state.copyWith(moviesUiState: const Loading(), query: query);
 
     final result = await _repository.searchMovies(SearchMovieQueryParamsDto(query: query));
