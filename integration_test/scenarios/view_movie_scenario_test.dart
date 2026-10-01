@@ -18,8 +18,8 @@ void main() {
 
     Permission.location.request();
 
-    if (await tester.native2.isPermissionDialogVisible(timeout: const Duration(seconds: 5))) {
-      await tester.native2.grantPermissionWhenInUse();
+    if (await tester.platform.mobile.isPermissionDialogVisible(timeout: const Duration(seconds: 5))) {
+      await tester.platform.mobile.grantPermissionWhenInUse();
     }
 
     // Given:
@@ -33,14 +33,16 @@ void main() {
       ListView,
     ).scrollTo(scrollDirection: AxisDirection.down, dragDuration: const Duration(milliseconds: 400));
 
-    // When:
-    await tester.native2.enableAirplaneMode();
+    if (tester.isAndroid) {
+      // When:
+      await tester.platform.mobile.enableAirplaneMode();
 
-    // Then:
-    expect(await tester(noConnectionWidgetKey).safeExists(), true);
+      // Then:
+      expect(await tester(noConnectionWidgetKey).safeExists(), true);
 
-    // When:
-    await tester.native2.disableAirplaneMode();
+      // When:
+      await tester.platform.mobile.disableAirplaneMode();
+    }
 
     // Then:
     expect(await tester(PopularMoviesListScreen).safeExists(), true);

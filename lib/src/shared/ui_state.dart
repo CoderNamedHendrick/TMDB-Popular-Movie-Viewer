@@ -23,6 +23,14 @@ bool _kDisplayError(Exception e) => true;
 sealed class UiState<T> {
   const UiState();
 
+  factory UiState.loading([T? data]) => Loading(data);
+
+  factory UiState.success(T result) => Success(result);
+
+  factory UiState.failure(Exception error, [T? data]) => Failure(error, data);
+
+  factory UiState.uninitialised() => const Uninitialised();
+
   T get requireData => throw StateError('Data not available for this data state');
 
   T? get data => null;

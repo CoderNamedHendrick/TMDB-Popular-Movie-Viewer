@@ -4,9 +4,9 @@ import '../../../../../shared/shared.dart';
 import '../../../domain/domain.dart';
 import 'state.dart';
 
-final popularMoviesVm = AutoDisposeNotifierProvider(() => PopularMoviesViewModel());
+final popularMoviesVm = NotifierProvider.autoDispose(() => PopularMoviesViewModel());
 
-final class PopularMoviesViewModel extends AutoDisposeNotifier<PopularMoviesState> {
+final class PopularMoviesViewModel extends Notifier<PopularMoviesState> {
   late MoviesRepository _repository;
 
   @override
@@ -16,7 +16,7 @@ final class PopularMoviesViewModel extends AutoDisposeNotifier<PopularMoviesStat
   }
 
   Future<void> fetchMovies() async {
-    state = state.copyWith(moviesUiState: const Loading());
+    state = state.copyWith(moviesUiState: UiState.loading(state.moviesUiState.data));
 
     final result = await _repository.fetchPopularMovies();
 

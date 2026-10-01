@@ -21,7 +21,7 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
   final scrollController = ScrollController();
 
   late final Debounceable<UiState<List<MovieResponseDto>>, String> _debouncedSearch =
-      debounce<UiState<List<MovieResponseDto>>, String>(ref.read(searchMoviesVm.notifier).search);
+      debounce<UiState<List<MovieResponseDto>>, String>(ref.watch(searchMoviesVm.notifier).search);
   late Iterable<Widget> _lastOptions = <Widget>[];
 
   void _fetchNextPageListener() {

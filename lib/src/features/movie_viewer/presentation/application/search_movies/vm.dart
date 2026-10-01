@@ -6,11 +6,11 @@ import '../../../../../shared/shared.dart';
 import '../../../domain/domain.dart';
 import 'state.dart';
 
-final searchMoviesVm = AutoDisposeNotifierProvider<SearchMoviesViewModel, SearchMoviesState>(
+final searchMoviesVm = NotifierProvider.autoDispose<SearchMoviesViewModel, SearchMoviesState>(
   () => SearchMoviesViewModel(),
 );
 
-final class SearchMoviesViewModel extends AutoDisposeNotifier<SearchMoviesState> {
+final class SearchMoviesViewModel extends Notifier<SearchMoviesState> {
   late MoviesRepository _repository;
 
   @override
