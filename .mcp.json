@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "marionette": {
+      "type": "stdio",
+      "command": "marionette_mcp",
+      "args": []
+    },
+    "patrol": {
+      "type": "stdio",
+      "command": "dart",
+      "args": ["run", "patrol_mcp"],
+      "env": {
+        "PROJECT_ROOT": ".",
+        "PATROL_FLUTTER_COMMAND": "flutter",
+        "PATROL_FLAGS": "",
+        "SHOW_TERMINAL": "false"
+      }
+    }
+  }
+}

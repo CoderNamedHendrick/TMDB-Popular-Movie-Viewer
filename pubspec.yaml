@@ -42,6 +42,7 @@ dependencies:
   collection: ^1.19.1
   connectivity_plus: ^7.3.1
   permission_handler: ^13.0.2
+  marionette_flutter: ^0.6.0
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +56,7 @@ dev_dependencies:
   dart_mappable_builder: ^4.6.1
   patrol_finders: ^3.6.0
   patrol: ^4.10.0
+  patrol_mcp: ^0.2.1
 
 
 # The following section is specific to Flutter packages.
@@ -67,3 +69,4 @@ patrol:
     package_name: com.hendrick.tmdb_movie_viewer
   ios:
     bundle_id: com.hendrick.tmdbMovieViewer
+  test_directory: integration_test

@@ -44,9 +44,14 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /patrol_test
+/.agents/skills
 
 .env
 *.mapper.dart
 
 # patrol
 integration_test/test_bundle.dart
+/gherkin/evidence/
+/gherkin/local.*
+**/test_bundle.dart
+.patrol.env

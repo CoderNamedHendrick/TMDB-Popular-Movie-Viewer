@@ -11,7 +11,10 @@ class MovieDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(movie.title)),
+      appBar: AppBar(
+        leading: const BackButton(key: ValueKey('movie_detail_back_button')),
+        title: Text(movie.title, key: const ValueKey('movie_detail_title')),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -60,6 +63,7 @@ class MovieDetailScreen extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   '${(movie.voteAverage * 10).ceil()}%',
+                                  key: const ValueKey('movie_detail_rating'),
                                   style: context.textTheme.labelMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: context.colorScheme.surface,
@@ -73,22 +77,25 @@ class MovieDetailScreen extends StatelessWidget {
                             right: 4,
                             left: 4,
                             bottom: 4,
-                            child: TweenAnimationBuilder(
-                              tween: Tween(begin: 0.0, end: movie.voteAverage / 10),
-                              duration: const Duration(milliseconds: 800),
-                              curve: Curves.easeIn,
-                              builder: (context, value, child) {
-                                return CircularProgressIndicator(
-                                  value: value,
-                                  strokeWidth: 3,
-                                  strokeCap: StrokeCap.round,
-                                  color: switch (value) {
-                                    <= 0.3 => Colors.red,
-                                    <= 0.6 => Colors.orange,
-                                    _ => Colors.green,
-                                  },
-                                );
-                              },
+                            // Pointer-transparent so the percentage text underneath stays hittable (tests).
+                            child: IgnorePointer(
+                              child: TweenAnimationBuilder(
+                                tween: Tween(begin: 0.0, end: movie.voteAverage / 10),
+                                duration: const Duration(milliseconds: 800),
+                                curve: Curves.easeIn,
+                                builder: (context, value, child) {
+                                  return CircularProgressIndicator(
+                                    value: value,
+                                    strokeWidth: 3,
+                                    strokeCap: StrokeCap.round,
+                                    color: switch (value) {
+                                      <= 0.3 => Colors.red,
+                                      <= 0.6 => Colors.orange,
+                                      _ => Colors.green,
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -99,7 +106,7 @@ class MovieDetailScreen extends StatelessWidget {
               ),
             ),
 
-            Text(movie.overview, style: context.textTheme.bodyLarge),
+            Text(movie.overview, key: const ValueKey('movie_detail_overview'), style: context.textTheme.bodyLarge),
           ],
         ),
       ),

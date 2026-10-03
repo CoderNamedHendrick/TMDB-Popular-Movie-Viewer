@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "app_root": ".",
+  "entrypoint": "lib/main.dart",
+  "flutter_command": [
+    "flutter"
+  ],
+  "flavor": null,
+  "environment": "local",
+  "allowed_environments": [
+    "local"
+  ],
+  "production": false,
+  "dart_define_files": [
+    ".env"
+  ],
+  "default_device": "0ADF8E81-D5B3-4EF2-BB47-88AE3D9D42BF",
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "suite": [],
+  "fixtures": {},
+  "actors": {},
+  "marionette": {
+    "preference": "auto"
+  },
+  "patrol": {
+    "enabled": true,
+    "preference": "auto",
+    "bootstrap": "gherkin/support/patrol_bootstrap.dart",
+    "command": [
+      "patrol"
+    ]
+  },
+  "agent": {
+    "name": "claude-code",
+    "config_path": ".mcp.json"
+  },
+  "public_text_keys": [],
+  "sensitive_keys": []
+}

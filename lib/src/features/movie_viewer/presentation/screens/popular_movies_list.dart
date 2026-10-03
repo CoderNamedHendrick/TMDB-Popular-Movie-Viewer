@@ -19,9 +19,13 @@ class PopularMoviesListScreen extends ConsumerStatefulWidget {
 
 class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScreen> {
   final scrollController = ScrollController();
+  final searchController = SearchController();
 
+  // Resolve the notifier on every call: `searchMoviesVm` is autoDispose, so caching the
+  // instance captured during the first build throws "Ref ... has been disposed" once the
+  // provider is recreated (e.g. after a hot reload or when its last watcher is rebuilt).
   late final Debounceable<UiState<List<MovieResponseDto>>, String> _debouncedSearch =
-      debounce<UiState<List<MovieResponseDto>>, String>(ref.watch(searchMoviesVm.notifier).search);
+      debounce<UiState<List<MovieResponseDto>>, String>((query) => ref.read(searchMoviesVm.notifier).search(query));
   late Iterable<Widget> _lastOptions = <Widget>[];
 
   void _fetchNextPageListener() {
@@ -46,16 +50,36 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
   @override
   void dispose() {
     scrollController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(searchMoviesVm.notifier);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Movie viewer'),
         actions: [
           SearchAnchor(
+            searchController: searchController,
+            // Stable keys so integration tests (gherkin/features) can drive the search view.
+            viewLeading: const BackButton(key: ValueKey('search_back_button')),
+            viewTrailing: [
+              ListenableBuilder(
+                listenable: searchController,
+                builder: (context, _) {
+                  if (searchController.text.isEmpty) return const SizedBox.shrink();
+                  return IconButton(
+                    key: const ValueKey('search_clear_button'),
+                    icon: const Icon(Icons.close),
+                    tooltip: MaterialLocalizations.of(context).clearButtonTooltip,
+                    onPressed: searchController.clear,
+                  );
+                },
+              ),
+            ],
             viewBackgroundColor: context.colorScheme.primary,
             viewHintText: 'Search movies',
             headerTextStyle: TextStyle(color: context.colorScheme.surface),
@@ -68,7 +92,11 @@ class _PopularMoviesListScreenState extends ConsumerState<PopularMoviesListScree
               );
             },
             builder: (context, controller) {
-              return IconButton(onPressed: controller.openView, icon: const Icon(Icons.search));
+              return IconButton(
+                key: const ValueKey('search_button'),
+                onPressed: controller.openView,
+                icon: const Icon(Icons.search),
+              );
             },
             suggestionsBuilder: (context, controller) async {
               final uiState = await _debouncedSearch(controller.text);
