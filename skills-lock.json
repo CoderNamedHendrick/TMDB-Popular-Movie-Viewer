@@ -1,11 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "gherkin": {
       "source": "CoderNamedHendrick/flutter-gherkin",
       "sourceType": "github",
       "skillPath": "skills/gherkin/SKILL.md",
-      "computedHash": "3af914f3903cdf596f4819b4d5598e19b11ba3bdffc812bb45ce0000b8fc4140"
+      "computedHash": "80cd66f2522b9a30cc7df663bfd9748dd25b2ac44aec3ac424403958c01dc11d"
     }
   }
 }
