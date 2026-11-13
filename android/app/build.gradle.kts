@@ -7,16 +7,13 @@ plugins {
 
 android {
     namespace = "com.hendrick.tmdb_movie_viewer"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler_android compiles against API 37; Flutter's default is still 36.
+    compileSdk = maxOf(flutter.compileSdkVersion, 37)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     testOptions {
@@ -49,6 +46,12 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
 
